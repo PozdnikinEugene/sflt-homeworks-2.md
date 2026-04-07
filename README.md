@@ -24,6 +24,127 @@
 
 ### Задание 1
 
+#### Конфиг файл 
+```
+global
+        log /dev/log    local0
+        log /dev/log    local1 notice
+        chroot /var/lib/haproxy
+        stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
+        stats timeout 30s
+        user haproxy
+        group haproxy
+        daemon
+
+        # Default SSL material locations
+        ca-base /etc/ssl/certs
+        crt-base /etc/ssl/private
+
+        # See: https://ssl-config.mozilla.org/#server=haproxy&server-version=2.0.3&config=intermediate
+        ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256>
+        ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
+        ssl-default-bind-options ssl-min-ver TLSv1.2 no-tls-tickets
+
+defaults
+        log     global
+        mode    http
+        option  httplog
+        option  dontlognull
+        timeout connect 5000
+        timeout client  50000
+        timeout server  50000
+        errorfile 400 /etc/haproxy/errors/400.http
+        errorfile 403 /etc/haproxy/errors/403.http
+        errorfile 408 /etc/haproxy/errors/408.http
+        errorfile 500 /etc/haproxy/errors/500.http
+        errorfile 502 /etc/haproxy/errors/502.http
+        errorfile 503 /etc/haproxy/errors/503.http
+        errorfile 504 /etc/haproxy/errors/504.http
+
+listen stats  # веб-страница со статистикой
+        bind                    :888
+        mode                    http
+        stats                   enable
+        stats uri               /stats
+        stats refresh           5s
+        stats realm             Haproxy\ Statistics
+
+listen web_tcp
+
+        bind :1325
+        mode tcp
+        balance roundrobin
+        server s1 127.0.0.1:8888 check inter 3s
+        server s2 127.0.0.1:9999 check inter 3s
+```
+![Console](https://github.com/PozdnikinEugene/sflt-homeworks-2/blob/main/img/1-1.png)
+
+![web](https://github.com/PozdnikinEugene/sflt-homeworks-2/blob/main/img/1-2.png)
+
+
+
+<details>
+  <summary>Запус simple python сервера 1 </summary>
+  
+  ```
+  cd;\
+[ -d http1 ] || mkdir http1; cd http1;\
+[ -f index.html ] || echo "Server 1 Port 8888" > index.html;\
+python3 -m http.server 8888 --bind 0.0.0.0
+  ```
+</details>
+
+<details>
+  <summary>Запус simple python сервера 2 </summary>
+  
+  ```
+  cd;\
+[ -d http1 ] || mkdir http1; cd http1;\
+[ -f index.html ] || echo "Server 1 Port 8888" > index.html;\
+python3 -m http.server 8888 --bind 0.0.0.0
+  ```
+</details>
+
+#### Установка Haproxy
+ ```
+#apt install haproxy
+ ```
+<details>
+  <summary>Внесение доп настроек в файл конфигурации Haproxy </summary>
+  
+  ```
+echo "
+listen stats  # веб-страница со статистикой
+        bind                    :888
+        mode                    http
+        stats                   enable
+        stats uri               /stats
+        stats refresh           5s
+        stats realm             Haproxy\ Statistics
+
+listen web_tcp
+
+        bind :1325
+        mode tcp
+        balance roundrobin
+        server s1 127.0.0.1:8888 check inter 3s
+        server s2 127.0.0.1:9999 check inter 3s  >> /etc/haproxy/haproxy.cfg
+  ```
+</details>
+
+#### Перечитать конфигурацию после внесения изменений 
+
+```
+# systemctl reload haproxy
+```
+
+<details>
+  <summary> Запуск curl в цикле </summary>
+```
+for i in {1..10}; do curl http://localhost:1325; sleep 2; done
+```
+</details>
+
 `Приведите ответ в свободной форме........`
 
 1. `Заполните здесь этапы выполнения, если требуется ....`
