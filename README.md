@@ -140,9 +140,9 @@ listen web_tcp
 
 <details>
   <summary> Запуск curl в цикле </summary>
-```
+   ```
 for i in {1..10}; do curl http://localhost:1325; sleep 2; done
-```
+   ```
 </details>
 
 `Приведите ответ в свободной форме........`
