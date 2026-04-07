@@ -26,6 +26,7 @@
 
 <details>
   <summary>  Конфиг файл /etc/haproxy/haproxy.cfg </summary>
+```
 global
         log /dev/log    local0
         log /dev/log    local1 notice
@@ -76,7 +77,8 @@ listen web_tcp
         balance roundrobin
         server s1 127.0.0.1:8888 check inter 3s
         server s2 127.0.0.1:9999 check inter 3s
-
+```
+```
 
 </details>
 
