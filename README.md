@@ -77,7 +77,10 @@ listen web_tcp
         server s1 127.0.0.1:8888 check inter 3s
         server s2 127.0.0.1:9999 check inter 3s
 ```
+##### Видим перенаправление запросов на разные серверы при обращении к HAProxy
 ![Console](https://github.com/PozdnikinEugene/sflt-homeworks-2.md/blob/main/img/1-1.png)
+
+##### Статистика в веб панеле :888/stats
 
 ![web](https://github.com/PozdnikinEugene/sflt-homeworks-2.md/blob/main/img/1-2.png)
 
