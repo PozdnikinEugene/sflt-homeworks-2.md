@@ -77,9 +77,9 @@ listen web_tcp
         server s1 127.0.0.1:8888 check inter 3s
         server s2 127.0.0.1:9999 check inter 3s
 ```
-![Console](https://github.com/PozdnikinEugene/sflt-homeworks-2/blob/main/img/1-1.png)
+![Console](https://github.com/PozdnikinEugene/sflt-homeworks-2.md/blob/main/img/1-1.png)
 
-![web](https://github.com/PozdnikinEugene/sflt-homeworks-2/blob/main/img/1-2.png)
+![web](https://github.com/PozdnikinEugene/sflt-homeworks-2.md/blob/main/img/1-2.png)
 
 
 
