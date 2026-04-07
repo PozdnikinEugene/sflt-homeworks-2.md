@@ -24,8 +24,7 @@
 
 ### Задание 1
 
-<details>
-  <summary>  Конфиг файл /etc/haproxy/haproxy.cfg </summary>
+Конфиг файл /etc/haproxy/haproxy.cfg
 ```
 global
         log /dev/log    local0
@@ -78,9 +77,6 @@ listen web_tcp
         server s1 127.0.0.1:8888 check inter 3s
         server s2 127.0.0.1:9999 check inter 3s
 ```
-```
-
-</details>
 
 ##### Видим перенаправление запросов на разные серверы при обращении к HAProxy
 ![Console](https://github.com/PozdnikinEugene/sflt-homeworks-2.md/blob/main/img/1-1.png)
@@ -160,9 +156,9 @@ for i in {1..10}; do curl http://localhost:1325; sleep 2; done
 
 ### Задание 2
 
-<details>
-  <summary>  Конфиг файл /etc/haproxy/haproxy.cfg </summary>
-  ```
+
+Конфиг файл /etc/haproxy/haproxy.cfg 
+```
 global
         log /dev/log    local0
         log /dev/log    local1 notice
@@ -220,8 +216,8 @@ backend web_servers    # секция бэкенд
         server s1 127.0.0.1:8888 check weight 2
         server s2 127.0.0.1:9999 check weight 3
         server s3 127.0.0.1:7777 check weight 4
-  ```
-</details>
+```
+
 ##### Видим перенаправление запросов на разные серверы при обращении к HAProxy по домену, по отличаюемуся домену так и без него. 
 ![Console](https://github.com/PozdnikinEugene/sflt-homeworks-2.md/blob/main/img/2-1.png)
 
@@ -229,69 +225,48 @@ backend web_servers    # секция бэкенд
 
 ![web](https://github.com/PozdnikinEugene/sflt-homeworks-2.md/blob/main/img/2-2.png)
 
-`Приведите ответ в свободной форме........`
+ <details>
+  <summary>Запуск simple python сервера 3 </summary>
+  
+  ```
+cd;\
+[ -d http1 ] || mkdir http1; cd http1;\
+echo "Server 3 Port 7777" > index.html;\
+python3 -m http.server 7777 --bind 0.0.0.0
+  ```
+</details>
 
-1. `Заполните здесь этапы выполнения, если требуется ....`
-2. `Заполните здесь этапы выполнения, если требуется ....`
-3. `Заполните здесь этапы выполнения, если требуется ....`
-4. `Заполните здесь этапы выполнения, если требуется ....`
-5. `Заполните здесь этапы выполнения, если требуется ....`
-6. 
+<details>
+  <summary> Внесение доп настроек в файл конфигурации Haproxy </summary>
+  
+  ```
+frontend example  # секция фронтенд
+        mode http
+        bind :8088
+	acl ACL_example.local hdr(host) -i example.local
+	use_backend web_servers if ACL_example.local
 
-```
-Поле для вставки кода...
-....
-....
-....
-....
-```
+backend web_servers    # секция бэкенд
+        mode http
+        balance roundrobin
+        option httpchk
+        http-check send meth GET uri /index.html
+        server s1 127.0.0.1:8888 weight 2 check
+        server s2 127.0.0.1:9999 weight 3 check
+        server s3 127.0.0.1:7777 weight 4 check
+  ```
+</details>
 
-`При необходимости прикрепитe сюда скриншоты
-![Название скриншота 2](ссылка на скриншот 2)`
-
-
----
-
-### Задание 3
-
-`Приведите ответ в свободной форме........`
-
-1. `Заполните здесь этапы выполнения, если требуется ....`
-2. `Заполните здесь этапы выполнения, если требуется ....`
-3. `Заполните здесь этапы выполнения, если требуется ....`
-4. `Заполните здесь этапы выполнения, если требуется ....`
-5. `Заполните здесь этапы выполнения, если требуется ....`
-6. 
-
-```
-Поле для вставки кода...
-....
-....
-....
-....
-```
-
-`При необходимости прикрепитe сюда скриншоты
-![Название скриншота](ссылка на скриншот)`
-
-### Задание 4
-
-`Приведите ответ в свободной форме........`
-
-1. `Заполните здесь этапы выполнения, если требуется ....`
-2. `Заполните здесь этапы выполнения, если требуется ....`
-3. `Заполните здесь этапы выполнения, если требуется ....`
-4. `Заполните здесь этапы выполнения, если требуется ....`
-5. `Заполните здесь этапы выполнения, если требуется ....`
-6. 
+#### Перечитать конфигурацию после внесения изменений 
 
 ```
-Поле для вставки кода...
-....
-....
-....
-....
+# systemctl reload haproxy
 ```
 
-`При необходимости прикрепитe сюда скриншоты
-![Название скриншота](ссылка на скриншот)`
+<details>
+  <summary>Цикл curl </summary>
+  
+  ```
+ for i in {1..10}; do curl -H 'Host:example.local' http://localhost:8088; sleep 2; done
+  ```
+</details>
