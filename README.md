@@ -24,8 +24,7 @@
 
 ### Задание 1
 
-Конфиг файл /etc/haproxy/haproxy.cfg
-[Конфиг файл /etc/haproxy/haproxy.cfg](files/haproxy_ex1.cfg)
+##### [Конфигурационный файл /etc/haproxy/haproxy.cfg](files/haproxy_ex1.cfg)
 
 ##### Видим перенаправление запросов на разные серверы при обращении к HAProxy
 ![Console](https://github.com/PozdnikinEugene/sflt-homeworks-2.md/blob/main/img/1-1.png)
@@ -105,8 +104,7 @@ for i in {1..10}; do curl http://localhost:1325; sleep 2; done
 
 ### Задание 2
 
-Конфиг файл /etc/haproxy/haproxy.cfg 
-[Конфиг файл /etc/haproxy/haproxy.cfg](files/haproxy_ex2.cfg)
+##### [Конфигурационный файл /etc/haproxy/haproxy.cfg](files/haproxy_ex2.cfg)
 
 ##### Видим перенаправление запросов на разные серверы при обращении к HAProxy по домену, по отличаюемуся домену так и без него. 
 ![Console](https://github.com/PozdnikinEugene/sflt-homeworks-2.md/blob/main/img/2-1.png)
