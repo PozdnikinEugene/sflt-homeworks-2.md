@@ -25,58 +25,7 @@
 ### Задание 1
 
 Конфиг файл /etc/haproxy/haproxy.cfg
-```
-global
-        log /dev/log    local0
-        log /dev/log    local1 notice
-        chroot /var/lib/haproxy
-        stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
-        stats timeout 30s
-        user haproxy
-        group haproxy
-        daemon
-
-        # Default SSL material locations
-        ca-base /etc/ssl/certs
-        crt-base /etc/ssl/private
-
-        # See: https://ssl-config.mozilla.org/#server=haproxy&server-version=2.0.3&config=intermediate
-        ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256>
-        ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
-        ssl-default-bind-options ssl-min-ver TLSv1.2 no-tls-tickets
-
-defaults
-        log     global
-        mode    http
-        option  httplog
-        option  dontlognull
-        timeout connect 5000
-        timeout client  50000
-        timeout server  50000
-        errorfile 400 /etc/haproxy/errors/400.http
-        errorfile 403 /etc/haproxy/errors/403.http
-        errorfile 408 /etc/haproxy/errors/408.http
-        errorfile 500 /etc/haproxy/errors/500.http
-        errorfile 502 /etc/haproxy/errors/502.http
-        errorfile 503 /etc/haproxy/errors/503.http
-        errorfile 504 /etc/haproxy/errors/504.http
-
-listen stats  # веб-страница со статистикой
-        bind                    :888
-        mode                    http
-        stats                   enable
-        stats uri               /stats
-        stats refresh           5s
-        stats realm             Haproxy\ Statistics
-
-listen web_tcp
-
-        bind :1325
-        mode tcp
-        balance roundrobin
-        server s1 127.0.0.1:8888 check inter 3s
-        server s2 127.0.0.1:9999 check inter 3s
-```
+[Конфиг файл /etc/haproxy/haproxy.cfg](files/haproxy_ex1.cfg)
 
 ##### Видим перенаправление запросов на разные серверы при обращении к HAProxy
 ![Console](https://github.com/PozdnikinEugene/sflt-homeworks-2.md/blob/main/img/1-1.png)
@@ -156,67 +105,8 @@ for i in {1..10}; do curl http://localhost:1325; sleep 2; done
 
 ### Задание 2
 
-
 Конфиг файл /etc/haproxy/haproxy.cfg 
-```
-global
-        log /dev/log    local0
-        log /dev/log    local1 notice
-        chroot /var/lib/haproxy
-        stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
-        stats timeout 30s
-        user haproxy
-        group haproxy
-        daemon
-
-        # Default SSL material locations
-        ca-base /etc/ssl/certs
-        crt-base /etc/ssl/private
-
-        # See: https://ssl-config.mozilla.org/#server=haproxy&server-version=2.0.3&config=intermediate
-        ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256>
-        ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
-        ssl-default-bind-options ssl-min-ver TLSv1.2 no-tls-tickets
-
-defaults
-        log     global
-        mode    http
-        option  httplog
-        option  dontlognull
-        timeout connect 5000
-        timeout client  50000
-        timeout server  50000
-        errorfile 400 /etc/haproxy/errors/400.http
-        errorfile 403 /etc/haproxy/errors/403.http
-        errorfile 408 /etc/haproxy/errors/408.http
-        errorfile 500 /etc/haproxy/errors/500.http
-        errorfile 502 /etc/haproxy/errors/502.http
-        errorfile 503 /etc/haproxy/errors/503.http
-        errorfile 504 /etc/haproxy/errors/504.http
-
-listen stats  # веб-страница со статистикой
-        bind                    :888
-        mode                    http
-        stats                   enable
-        stats uri               /stats
-        stats refresh           5s
-        stats realm             Haproxy\ Statistics
-
-frontend example  # секция фронтенд
-        mode http
-        bind :8088
-    acl ACL_example.local hdr(host) -i example.local
-    use_backend web_servers if ACL_example.local
-
-backend web_servers    # секция бэкенд
-        mode http
-        balance roundrobin
-        option httpchk
-        http-check send meth GET uri /index.html
-        server s1 127.0.0.1:8888 check weight 2
-        server s2 127.0.0.1:9999 check weight 3
-        server s3 127.0.0.1:7777 check weight 4
-```
+[Конфиг файл /etc/haproxy/haproxy.cfg](files/haproxy_ex2.cfg)
 
 ##### Видим перенаправление запросов на разные серверы при обращении к HAProxy по домену, по отличаюемуся домену так и без него. 
 ![Console](https://github.com/PozdnikinEugene/sflt-homeworks-2.md/blob/main/img/2-1.png)
